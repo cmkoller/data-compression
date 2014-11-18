@@ -15,7 +15,7 @@ def run_compression(filename)
   start_time = Time.now
   File.open(new_filename, 'w') do |f|
     index_array = lzw_compress(text)
-    f << index_array.pack('l*')
+    f << index_array.pack('U*')
   end
   end_time = Time.now
   # Get and print the output
@@ -41,7 +41,7 @@ end
 def run_decompression(filename)
   # Read the file
   indices = File.read(filename)
-  indices = indices.unpack('l*')
+  indices = indices.unpack('U*')
   #puts "ORIGINAL DECODING: #{indices}"
   new_filename = "_" + filename[0..-12]
   #puts lzw_decompress(indices)
