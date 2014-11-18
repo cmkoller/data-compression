@@ -1,5 +1,4 @@
 require 'benchmark'
-require 'pry'
 
 def process_file(filename)
   if filename.end_with? ".compressed"
@@ -12,15 +11,15 @@ end
 def run_compression(filename)
   # Read the file
   text = File.read(filename)
-  text2 = text.clone
   new_filename = filename + ".compressed"
-  time = Benchmark.realtime do
-    File.open(new_filename, 'w') do |f|
-      index_array = lzw_compress(text)
-      f << index_array.pack('l*')
-    end
+  start_time = Time.now
+  File.open(new_filename, 'w') do |f|
+    index_array = lzw_compress(text)
+    f << index_array.pack('l*')
   end
+  end_time = Time.now
   # Get and print the output
+  time = end_time - start_time
   uncomp_size = File.size(filename)
   comp_size = File.size(new_filename)
   percentage = (comp_size / uncomp_size.to_f).round(2) * 100
@@ -56,7 +55,6 @@ end
 
 
 
-# RUBY PROFILER
 def lzw_compress(text)
   # Initialize dictionary, with ASCII_CHAR => ASCII_NUM
   dict = make_dictionary(false)
@@ -71,11 +69,8 @@ def lzw_compress(text)
   # remove first char of text and assign that char to STR
   str = text[0]
   text[0] = ''
-  for i in (0..text.length - 1)
-  #while text.length >= 1
-    # Remove first char of text and assign that char to CUR
-    cur = text[0]
-    text[0] = ''
+  last_char = text[-1]
+  text.each_char do |cur|
     if dict.has_key?(str + cur)
       str << cur
     else
@@ -90,10 +85,11 @@ def lzw_compress(text)
     end
   end
 
-  str << cur
+  # Finish things up by adding the remaining chars
+  str << last_char
   output << dict[str]
 
-  return output
+  output
 end
 
 def lzw_decompress(indices)
@@ -156,20 +152,20 @@ def make_dictionary(decompressing)
   dict
 end
 
-puts "Compressing"
-run_compression("test.txt")
+# puts "Compressing"
+# run_compression("test.txt")
 # puts "Decompressing"
 # run_decompression("test.txt.compressed")
 
-puts "Compressing"
-run_compression("fundamental_kant.txt")
+# puts "Compressing"
+# run_compression("fundamental_kant.txt")
 # puts "Decompressing"
 # run_decompression("fundamental_kant.txt.compressed")
 
-# puts "Compressing"
-# run_compression("moby_dick.txt")
-# puts "Decompressing"
-# run_decompression("moby_dick.txt.compressed")
+puts "Compressing"
+run_compression("moby_dick.txt")
+puts "Decompressing"
+run_decompression("moby_dick.txt.compressed")
 
 # Benchmark.bm(7) do |x|
 #   long_string = File.read("moby_dick.txt")
