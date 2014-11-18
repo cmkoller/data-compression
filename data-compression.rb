@@ -156,22 +156,6 @@ def make_dictionary(decompressing)
   dict
 end
 
-def do_they_match(filename)
-  puts "DO THEY MATCH?"
-  pre_packed = lzw_compress(File.read(filename))
-  packed = pre_packed.pack('l*')
-  puts "PRE-PACKED:"
-  puts pre_packed.to_s
-  puts
-  unpacked = packed.unpack('l*')
-  puts "UNPACKED:"
-  puts unpacked.to_s
-  puts
-  puts pre_packed == unpacked
-end
-
-#do_they_match('fundamental_kant.txt')
-
 puts "Compressing"
 run_compression("test.txt")
 # puts "Decompressing"
