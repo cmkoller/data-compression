@@ -70,7 +70,7 @@ def lzw_compress(text)
   str = text[0]
   text[0] = ''
   last_char = text[-1]
-  text.each_char do |cur|
+    text.each_char do |cur|
     if dict.has_key?(str + cur)
       str << cur
     else
@@ -152,23 +152,4 @@ def make_dictionary(decompressing)
   dict
 end
 
-# puts "Compressing"
-# run_compression("test.txt")
-# puts "Decompressing"
-# run_decompression("test.txt.compressed")
-
-# puts "Compressing"
-# run_compression("fundamental_kant.txt")
-# puts "Decompressing"
-# run_decompression("fundamental_kant.txt.compressed")
-
-puts "Compressing"
-run_compression("moby_dick.txt")
-puts "Decompressing"
-run_decompression("moby_dick.txt.compressed")
-
-# Benchmark.bm(7) do |x|
-#   long_string = File.read("moby_dick.txt")
-#   x.report("Comparing to empty string:") { (0..100).each { long_string == ''}}
-#   x.report ("Finding length:") { (0..100).each {  long_string.length >= 1}}
-# end
+process_file(ARGV[0])
